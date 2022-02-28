@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+
+<body>
+    <div>
+        <span id="timer" style="font-size: xx-large;">25:00</span>
+        <span id="count" style="font-size: xx-large; margin-left: 1em">0</span>
+    </div>
+    <button id="start" onclick="startTimer()">Start</button>
+    <button id="reset" onclick="resetTimer()">Reset</button>
+    <button id="stop" onclick="stopTimer()">Stop</button>
+</body>
+
+<script>
+    var defaultPomodoroTime = 25;
+    var defaultShortBreakTime = 5;
+    var defaultLongBreakTime = 15;
+    var timer;
+
+    var time = defaultPomodoroTime * 60;
+    var pomodoroCounter = 0;
+    var isBreak = false;
+    var isStopped = true;
+
+    function startTimer() {
+        if (!isStopped) { return };
+        isStopped = false;
+
+        timer = setInterval(function () {
+            time--;
+            var minutes = Math.floor(time / 60);
+            var seconds = time - minutes * 60;
+            if (seconds < 10) {
+                seconds = "0" + seconds;
+            }
+            document.getElementById("timer").innerHTML = minutes + ":" + seconds;
+            if (time <= 0) {
+                clearInterval(timer);
+                endOfTimer();
+            }
+        }, 1000);
+    }
+
+    function endOfTimer() {
+        isStopped = true;
+        if (isBreak == false) {
+            pomodoroCounter++;
+            document.getElementById("count").innerHTML = pomodoroCounter
+            if (pomodoroCounter % 4 == 0) {
+                time = defaultLongBreakTime * 60;
+            } else {
+                time = defaultShortBreakTime * 60;
+            }
+        } else {
+            time = defaultPomodoroTime * 60;
+        }
+
+        isBreak = !isBreak;
+        startTimer();
+    }
+
+    function stopTimer() {
+        if (isStopped) { return };
+        clearInterval(timer);
+        isStopped = true;
+    }
+
+    function resetTimer() {
+        time = defaultPomodoroTime * 60;
+        document.getElementById("timer").innerHTML = defaultPomodoroTime + ":00";
+    }
+</script>
+
+</html>
